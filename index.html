@@ -5,10 +5,23 @@
 	<head>
 		<title>Graphic Wiki</title>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="main.js"></script>
 	</head>
 
-	<body>
+	<body style="background-color: black;">
+		<script type="text/javascript">
+			// Load charts API
+			google.load('visualization', '1.1', {'packages':['corechart', 'calendar']});
+			//google.load("visualization", "1.1", {'packages':['calendar']});
+		</script>
+	
+		<input type="text" id="article-title" value="Cat"></input>
+	
+		<button onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);">Cats!</button>
 		
+		<div id="histogram" style="width: 400px; height: 300px; background-color: black;"></div>
+		<div id="pie" style="width: 400px; height: 300px; background-color: black;"></div>
+		<div id="calendar" ></div>
 	</body>	
 
 </html>
