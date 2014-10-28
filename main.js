@@ -216,3 +216,17 @@ ChartsAPI = new function()
 		chart.draw(table, options);
 	}
 }
+
+
+/**
+ * Controls user interaction with application
+ */
+Controller = new function()
+{
+	this.switchTab = function(item)
+	{
+		document.querySelector('.active').className = "inactive";
+		item.className = "active";
+	}
+}
+ 

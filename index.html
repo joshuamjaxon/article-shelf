@@ -23,15 +23,21 @@
 		<nav>
 			<input type="text" id="article-title" value="Enter an article title and press enter!" onkeydown="if (event.keyCode == 13) document.querySelector('nav button').click()"></input>
 			<button style="display: none;" onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);"></button>
+			<h1 id="status"></h1>
 		</nav>
 		
-		<h1 id="status"></h1>
+		<nav>
+			<ul>
+				<li id="tab-histogram" class="active" onclick="Controller.switchTab(this);">Histogram</li>
+				<li id="tab-histogram" class="inactive" onclick="Controller.switchTab(this);">Pie</li>
+			</ul>
+		</nav>
 		
-		<section>
-			<div id="histogram" ></div>
-			<div id="pie"></div>
-			<div id="calendar"></div>
-		</section>
+			<article>
+				<div id="histogram" ></div>
+				<div id="pie"></div>
+				<div id="calendar"></div>
+			</article>
 		
 		<footer>
 			<p>Mashup created by Joshua Jackson for CS365.</p>

@@ -3,6 +3,10 @@
     src: url(LinLibertine_R.woff);
 }
 
+body {
+	font-family: 'LinuxLibertine', serif;
+}
+
 header h1 {
 	font-family: 'LinuxLibertine', serif;
 	font-size: 32pt;
@@ -16,11 +20,7 @@ header h1 {
 	margin-bottom: 10px;
 }
 
-nav button {
-	display: none;
-}
-
-nav input#article-title {
+#article-title {
 	font-family: 'LinuxLibertine', serif;
 	font-size: 14pt;
 	text-align: center;
@@ -39,10 +39,58 @@ nav input#article-title {
 	margin-bottom: 20px;
 }
 
+nav ul {
+	width: 260px;
+	margin-bottom: 0px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+nav ul li {
+	font-size: 14pt;
+	text-align: center;
+	color: #555555;
+	display: inline-block;
+	width: 100px;
+	padding: 5px;
+	border: 1px solid;
+	border-color: #555555;
+	border-bottom-color: black;
+}
+
+.inactive:hover {
+	color: black;
+	border-color: black;
+}
+
+.active {
+	color: black;
+	border-color: black;
+	border-bottom-color: white;
+}
+
 #status {
 	font-family: 'LinuxLibertine', serif;
 	font-size: 12pt;
 	text-align: center;
+}
+
+article {
+	height: 50%;
+	width: 80%;
+	border: 1px solid;
+	border-color: black;
+	min-height: 600px;
+	min-width: 400px;
+	margin-top: -1px;;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: scroll;
+}
+
+article div {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 footer p {
