@@ -4,24 +4,38 @@
 
 	<head>
 		<title>Graphic Wiki</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="main.js"></script>
 	</head>
 
-	<body style="background-color: black;">
+	<body>
+	
+		<header>
+			<h1>Graphic Wiki</h1>
+		</header>
+	
 		<script type="text/javascript">
 			// Load charts API
 			google.load('visualization', '1.1', {'packages':['corechart', 'calendar']});
-			//google.load("visualization", "1.1", {'packages':['calendar']});
 		</script>
 	
-		<input type="text" id="article-title" value="Cat"></input>
-	
-		<button onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);">Cats!</button>
+		<nav>
+			<input type="text" id="article-title" value="Enter an article title and press enter!" onkeydown="if (event.keyCode == 13) document.querySelector('nav button').click()"></input>
+			<button style="display: none;" onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);"></button>
+		</nav>
 		
-		<div id="histogram" style="width: 400px; height: 300px; background-color: black;"></div>
-		<div id="pie" style="width: 400px; height: 300px; background-color: black;"></div>
-		<div id="calendar" ></div>
+		<h1 id="status"></h1>
+		
+		<section>
+			<div id="histogram" ></div>
+			<div id="pie"></div>
+			<div id="calendar"></div>
+		</section>
+		
+		<footer>
+			<p>Mashup created by Joshua Jackson for CS365.</p>
+		</footer>
 	</body>	
 
 </html>

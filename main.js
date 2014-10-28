@@ -1,5 +1,6 @@
 function WikiData()
 {
+	this.title;
 	this.id;
 	this.length;
 	this.values;
@@ -22,6 +23,7 @@ WikipediaAPI = new function()
 	
 	this.setData = function(value)
 	{
+		data.title = value.title;
 		data.id = value.id;
 		data.length = value.length;
 		data.values = value.values;
@@ -37,12 +39,25 @@ WikipediaAPI = new function()
 	
 	this.extract = function(jsonp)
 	{
-		// Assign data values from jsonp
+		// Get page id to see if query was valid
 		data.id = jsonp['query']['pageids'][0];
-		data.length = jsonp['query']['pages'][data.id]['revisions'].length;
-		data.values = jsonp['query']['pages'][data.id]['revisions'];
 		
+		// Assign data values from jsonp if valid
+		if (data.id != -1)
+		{
+			data.title = jsonp['query']['pages'][data.id]['title'];
+			data.length = jsonp['query']['pages'][data.id]['revisions'].length;
+			data.values = jsonp['query']['pages'][data.id]['revisions'];
+		}
+		else
+		{
+			data.title = "";
+			data.length = 0;
+			data.values = [];
+		}
+
 		// After data is extracted, send it to the charts API for parsing
+		ChartsAPI.displayStatus(data);
 		ChartsAPI.drawSizeHistogram(data);
 		ChartsAPI.drawCalendarChart(data);
 		ChartsAPI.drawUserPieChart(data);
@@ -58,6 +73,14 @@ WikipediaAPI = new function()
  */
 ChartsAPI = new function()
 {
+	this.displayStatus = function(data)
+	{
+		if (data.id != -1)
+			document.getElementById('status').innerText = "Displaying data for the last " + data.length + " edits to article \"" + data.title + ".\"";
+		else
+			document.getElementById('status').innerText = "Article not found. Is the title spelled correctly?";
+	}
+
 	/**
 	 * Draws a histogram displaying the sizes of article edits in bytes
 	 *
@@ -81,6 +104,8 @@ ChartsAPI = new function()
 		// Set chart options
 		var options = {
 			title: 'Size of Article Edits',
+			height: 300,
+			width: 500,
 			legend: { position: 'none' },
 		};
 		
@@ -146,8 +171,6 @@ ChartsAPI = new function()
 		table.addColumn('string', 'User');
 		table.addColumn('number', 'Edits');
 		
-		console.log(data.values);
-		
 		// Sort data based on user names
 		data.values.sort(function(a, b)
 		{
@@ -158,8 +181,6 @@ ChartsAPI = new function()
 				
 			return 0;
 		});
-		
-		console.log(data.values);
 		
 		// Create new array to hold users and the number of times they have edited
 		var edits = [];
@@ -185,6 +206,8 @@ ChartsAPI = new function()
 		// Set chart options
 		var options = {
 			title: 'Article Edits by User',
+			height: 300,
+			width: 500,
 			legend: { position: 'none' },
 		};
 		
