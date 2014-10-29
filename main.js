@@ -31,9 +31,17 @@ WikipediaAPI = new function()
 	
 	this.getRevisions = function(title)
 	{
+		// Set status to "Retrieving data from Wikipedia . . ."
+		document.getElementById('status').innerText = "Retrieving data from Wikipedia . . .";
+		
+		// Create new script element for JSONP 
 		var script = document.createElement('script');
 		script.className = 'json';
+		
+		// Source url get pageids and revision history for title
 		script.src = 'http://en.wikipedia.org/w/api.php?action=query&prop=revisions&indexpageids&titles=' + title + '&rvprop=user|timestamp|size&rvlimit=max&format=json&callback=WikipediaAPI.extract';
+		
+		// Appends script to document and retrieves data from wikipedia
 		document.head.appendChild(script);
 	}
 	
@@ -174,7 +182,6 @@ ChartsAPI = new function()
 		
 		// Get number of years being displayed
 		var today = new Date();
-		var years = today.getFullYear() - edits[edits.length - 1][0].getFullYear() + 1;
 		
 		// Set chart options
 		var options = {
@@ -191,6 +198,11 @@ ChartsAPI = new function()
 		document.getElementById('calendar').style.display = "none";
 	}
 	
+	/**
+	*
+	*
+	*
+	*/
 	var drawUserPieChart = function(data)
 	{
 		// Create a data table

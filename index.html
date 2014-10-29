@@ -27,7 +27,7 @@
 		</script>
 	
 		<nav id="search">
-			<input type="text" id="article-title" value="Enter an article title and press enter!" onkeydown="if (event.keyCode == 13) document.querySelector('nav button').click()"></input>
+			<input type="text" id="article-title" value="Enter an article title and press enter!" onclick="this.select();" onkeydown="if (event.keyCode == 13) document.querySelector('nav button').click()"></input>
 			<button style="display: none;" onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);"></button>
 			<h1 id="status">Loading the Google Charts API . . .</h1>
 		</nav>
