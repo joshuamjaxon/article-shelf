@@ -86,9 +86,9 @@ ChartsAPI = new function()
 		document.querySelector('#tabs').style.display = "block";
 	
 		// Render all charts regardless of display setting
-		drawSizeHistogram(data);
+		drawSizeHistogram(data);	
 		drawCalendarChart(data);	// Must be called before pie chart
-		drawUserPieChart(data);
+		drawUserPieChart(data);		
 		
 		// Only display the active chart
 		document.getElementById(document.querySelector('.active').id.slice(4)).style.display = "block";
@@ -179,7 +179,7 @@ ChartsAPI = new function()
 		// Set chart options
 		var options = {
 			title: 'Distribution of Edits over Time',
-			height: years * 110 + 25,
+			height: ((today.getFullYear() - edits[edits.length - 1][0].getFullYear()) - (today.getFullYear() - edits[0][0].getFullYear()) + 1) * 110 + 25,
 			width: 720,
 			calendar: { cellSize: 12 },
 		};
