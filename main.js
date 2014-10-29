@@ -81,10 +81,14 @@ ChartsAPI = new function()
 
 	this.drawCharts = function(data)
 	{
+		// Make sure chart section and tabs are displayed
+		document.querySelector('section').style.display = "block";
+		document.querySelector('#tabs').style.display = "block";
+	
 		// Render all charts regardless of display setting
 		drawSizeHistogram(data);
+		drawCalendarChart(data);	// Must be called before pie chart
 		drawUserPieChart(data);
-		drawCalendarChart(data);
 		
 		// Only display the active chart
 		document.getElementById(document.querySelector('.active').id.slice(4)).style.display = "block";
@@ -124,6 +128,67 @@ ChartsAPI = new function()
 		var chart = new google.visualization.Histogram(document.getElementById('histogram'));
 		chart.draw(table, options);
 		document.getElementById('histogram').style.display = "none";
+	}
+	
+	/**
+	* Draws a calendar chart displaying the density of edits each day.
+	*
+	* Must be called before pie chart!
+	*/
+	var drawCalendarChart = function(data)
+	{
+		// Create a data table
+		var table = new google.visualization.DataTable();
+		
+		// Add table headings
+		table.addColumn('date', 'Date');
+		table.addColumn('number', 'Edits');
+		
+		// Create new array to hold dates and number of times each has appeared
+		var edits = [];
+		
+		// Create temporary variables to hold date
+		var temp;
+		
+		// Iterate through data
+		for (i = 0; i < data.length; i++)
+		{
+			// Create temporary date variable and slice up timestamp to fill it
+			temp = new Date(data.values[i].timestamp.slice(0, 4), data.values[i].timestamp.slice(5, 7) - 1, data.values[i].timestamp.slice(8, 10));
+			
+			// Compare date elements individually; comparing full dates does not work.
+			if (i > 0 && temp.getDate() == edits[edits.length - 1][0].getDate() && temp.getMonth() == edits[edits.length - 1][0].getMonth() && temp.getYear() == edits[edits.length - 1][0].getYear())
+			{
+				// Increase counter if same date
+				edits[edits.length - 1][1] += 1;
+			}
+			else
+			{
+				// Else push new date to stack with count of 1
+				edits.push([temp, 1]);
+			}
+		}
+
+		// Add resulting edits count to table
+		table.addRows(edits);
+		
+		// Get number of years being displayed
+		var today = new Date();
+		var years = today.getFullYear() - edits[edits.length - 1][0].getFullYear() + 1;
+		
+		// Set chart options
+		var options = {
+			title: 'Distribution of Edits over Time',
+			height: years * 110 + 25,
+			width: 720,
+			calendar: { cellSize: 12 },
+		};
+
+		// Draw the chart
+		document.getElementById('calendar').style.display = "block";
+		var chart = new google.visualization.Calendar(document.getElementById('calendar'));
+		chart.draw(table, options);
+		document.getElementById('calendar').style.display = "none";
 	}
 	
 	var drawUserPieChart = function(data)
@@ -183,57 +248,6 @@ ChartsAPI = new function()
 		document.getElementById('pie').style.display = "none";
 	}
 
-	var drawCalendarChart = function(data)
-	{
-		// Create a data table
-		var table = new google.visualization.DataTable();
-		
-		// Add table headings
-		table.addColumn('date', 'Date');
-		table.addColumn('number', 'Edits');
-		
-		// Create new array to hold dates and number of times each has appeared
-		var edits = [];
-		
-		// Create temporary variables to hold date
-		var temp;
-		
-		// Iterate through data
-		for (i = 0; i < data.length; i++)
-		{
-			// Create temporary date variable and slice up timestamp to fill it
-			temp = new Date(data.values[i].timestamp.slice(0, 4), data.values[i].timestamp.slice(5, 7) - 1, data.values[i].timestamp.slice(8, 10));
-			
-			// Compare date elements individually; comparing full dates does not work.
-			if (i > 0 && temp.getDate() == edits[edits.length - 1][0].getDate() && temp.getMonth() == edits[edits.length - 1][0].getMonth() && temp.getYear() == edits[edits.length - 1][0].getYear())
-			{
-				// Increase counter if same date
-				edits[edits.length - 1][1] += 1;
-			}
-			else
-			{
-				// Else push new date to stack with count of 1
-				edits.push([temp, 1]);
-			}
-		}
-
-		// Add resulting edits count to table
-		table.addRows(edits);
-		
-		// Set chart options
-		var options = {
-			title: 'Distribution of Edits over Time',
-			height: 720,
-			width: 720,
-			calendar: { cellSize: 12 },
-		};
-
-		// Draw the chart
-		document.getElementById('calendar').style.display = "block";
-		var chart = new google.visualization.Calendar(document.getElementById('calendar'));
-		chart.draw(table, options);
-		document.getElementById('calendar').style.display = "none";
-	}
 }
 
 
