@@ -93,10 +93,6 @@ section div {
 	margin-right: auto;
 }
 
-section .inactive {
-	display: none;
-}
-
 footer p {
 	font-family: 'LinuxLibertine', serif;
 	font-size: 10pt;

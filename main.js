@@ -86,10 +86,8 @@ ChartsAPI = new function()
 		drawUserPieChart(data);
 		drawCalendarChart(data);
 		
-		// Get list of all inactive charts and set their displays to off
-		var inactiveCharts = document.querySelectorAll('section .inactive');
-		for (i = 0; i < inactiveCharts.length; i++)
-			inactiveCharts[i].style.display = "none";
+		// Only display the active chart
+		document.getElementById(document.querySelector('.active').id.slice(4)).style.display = "block";
 	}
 	
 	/**
@@ -124,6 +122,7 @@ ChartsAPI = new function()
 		document.getElementById('histogram').style.display = "block";
 		var chart = new google.visualization.Histogram(document.getElementById('histogram'));
 		chart.draw(table, options);
+		document.getElementById('histogram').style.display = "none";
 	}
 
 	var drawCalendarChart = function(data)
@@ -173,6 +172,7 @@ ChartsAPI = new function()
 		document.getElementById('calendar').style.display = "block";
 		var chart = new google.visualization.Calendar(document.getElementById('calendar'));
 		chart.draw(table, options);
+		document.getElementById('calendar').style.display = "none";
 	}
 	
 	var drawUserPieChart = function(data)
@@ -228,6 +228,7 @@ ChartsAPI = new function()
 		document.getElementById('pie').style.display = "block";
 		var chart = new google.visualization.PieChart(document.getElementById('pie'));
 		chart.draw(table, options);
+		document.getElementById('pie').style.display = "none";
 	}
 }
 
