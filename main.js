@@ -58,9 +58,7 @@ WikipediaAPI = new function()
 
 		// After data is extracted, send it to the charts API for parsing
 		ChartsAPI.displayStatus(data);
-		ChartsAPI.drawSizeHistogram(data);
-		ChartsAPI.drawCalendarChart(data);
-		ChartsAPI.drawUserPieChart(data);
+		ChartsAPI.drawCharts(data);
 	}
 }
 
@@ -81,12 +79,25 @@ ChartsAPI = new function()
 			document.getElementById('status').innerText = "Article not found. Is the title spelled correctly?";
 	}
 
+	this.drawCharts = function(data)
+	{
+		// Render all charts regardless of display setting
+		drawSizeHistogram(data);
+		drawUserPieChart(data);
+		drawCalendarChart(data);
+		
+		// Get list of all inactive charts and set their displays to off
+		var inactiveCharts = document.querySelectorAll('section .inactive');
+		for (i = 0; i < inactiveCharts.length; i++)
+			inactiveCharts[i].style.display = "none";
+	}
+	
 	/**
 	 * Draws a histogram displaying the sizes of article edits in bytes
 	 *
 	 * @param	data	 WikiData Object with data to display
 	 */
-	this.drawSizeHistogram = function(data)
+	var drawSizeHistogram = function(data)
 	{
 		// Create a data table
 		var table = new google.visualization.DataTable();
@@ -104,17 +115,18 @@ ChartsAPI = new function()
 		// Set chart options
 		var options = {
 			title: 'Size of Article Edits',
-			height: 300,
+			height: document.getElementById('histogram').style.height,
 			width: 500,
 			legend: { position: 'none' },
 		};
 		
 		// Draw the chart
+		document.getElementById('histogram').style.display = "block";
 		var chart = new google.visualization.Histogram(document.getElementById('histogram'));
 		chart.draw(table, options);
 	}
 
-	this.drawCalendarChart = function(data)
+	var drawCalendarChart = function(data)
 	{
 		// Create a data table
 		var table = new google.visualization.DataTable();
@@ -158,11 +170,12 @@ ChartsAPI = new function()
 		};
 
 		// Draw the chart
+		document.getElementById('calendar').style.display = "block";
 		var chart = new google.visualization.Calendar(document.getElementById('calendar'));
 		chart.draw(table, options);
 	}
 	
-	this.drawUserPieChart = function(data)
+	var drawUserPieChart = function(data)
 	{
 		// Create a data table
 		var table = new google.visualization.DataTable();
@@ -212,6 +225,7 @@ ChartsAPI = new function()
 		};
 		
 		// Draw the chart
+		document.getElementById('pie').style.display = "block";
 		var chart = new google.visualization.PieChart(document.getElementById('pie'));
 		chart.draw(table, options);
 	}
@@ -225,8 +239,13 @@ Controller = new function()
 {
 	this.switchTab = function(item)
 	{
+		// Deactivate previous tab and corresponding chart
+		document.getElementById(document.querySelector('.active').id.slice(4)).style.display = "none";
 		document.querySelector('.active').className = "inactive";
+		
+		// Activate selected tab and corresponding chart
 		item.className = "active";
+		document.getElementById(document.querySelector('.active').id.slice(4)).style.display = "block";
 	}
 }
  

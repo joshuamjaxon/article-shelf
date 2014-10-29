@@ -20,24 +20,25 @@
 			google.load('visualization', '1.1', {'packages':['corechart', 'calendar']});
 		</script>
 	
-		<nav>
+		<nav id="search">
 			<input type="text" id="article-title" value="Enter an article title and press enter!" onkeydown="if (event.keyCode == 13) document.querySelector('nav button').click()"></input>
 			<button style="display: none;" onclick="WikipediaAPI.getRevisions(document.getElementById('article-title').value);"></button>
 			<h1 id="status"></h1>
 		</nav>
 		
-		<nav>
+		<nav id="tabs">
 			<ul>
 				<li id="tab-histogram" class="active" onclick="Controller.switchTab(this);">Histogram</li>
-				<li id="tab-histogram" class="inactive" onclick="Controller.switchTab(this);">Pie</li>
+				<li id="tab-pie" class="inactive" onclick="Controller.switchTab(this);">Pie</li>
+				<li id="tab-calendar" class="inactive" onclick="Controller.switchTab(this);">Calendar</li>
 			</ul>
 		</nav>
 		
-			<article>
-				<div id="histogram" ></div>
-				<div id="pie"></div>
-				<div id="calendar"></div>
-			</article>
+		<section>
+			<div id="histogram" class="active"></div>
+			<div id="pie" class="inactive"></div>
+			<div id="calendar" class="inactive"></div>
+		</section>
 		
 		<footer>
 			<p>Mashup created by Joshua Jackson for CS365.</p>

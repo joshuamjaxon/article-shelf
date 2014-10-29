@@ -39,14 +39,14 @@ header h1 {
 	margin-bottom: 20px;
 }
 
-nav ul {
-	width: 260px;
+#tabs ul {
+	width: 80%;
 	margin-bottom: 0px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-nav ul li {
+#tabs ul li {
 	font-size: 14pt;
 	text-align: center;
 	color: #555555;
@@ -58,12 +58,12 @@ nav ul li {
 	border-bottom-color: black;
 }
 
-.inactive:hover {
+#tabs ul .inactive:hover {
 	color: black;
 	border-color: black;
 }
 
-.active {
+#tabs ul .active {
 	color: black;
 	border-color: black;
 	border-bottom-color: white;
@@ -75,22 +75,26 @@ nav ul li {
 	text-align: center;
 }
 
-article {
+section {
 	height: 50%;
 	width: 80%;
 	border: 1px solid;
 	border-color: black;
 	min-height: 600px;
 	min-width: 400px;
-	margin-top: -1px;;
+	margin-top: -1px;
 	margin-left: auto;
 	margin-right: auto;
 	overflow: scroll;
 }
 
-article div {
+section div {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+section .inactive {
+	display: none;
 }
 
 footer p {
