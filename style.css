@@ -77,7 +77,7 @@ header h1 {
 
 section {
 	width: 80%;
-	min-width: 747px; /*400*/
+	min-width: 747px;
 	border: 1px solid;
 	border-color: black;
 	margin-top: -1px;
