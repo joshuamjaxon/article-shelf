@@ -309,8 +309,29 @@ ChartsAPI = new function()
 			}
 		}
 		
+		// Create new array to hold revised edits, which lumps single users into one row
+		var revisedEdits = [];
+		
+		// Set the first row of revised edits to single users
+		revisedEdits.push(["Single Edits", 0]);
+		
+		// Iterate through edits
+		for (i = 0; i < edits.length; i++)
+		{
+			// If the row has only one edit, increment single user counter
+			if (edits[i][1] === 1)
+			{
+				revisedEdits[0][1] += 1;
+			}
+			// Otherwise push the row to revised edits
+			else
+			{
+				revisedEdits.push(edits[i]);
+			}
+		}
+		
 		// Add resulting data to table
-		table.addRows(edits);
+		table.addRows(revisedEdits);
 		
 		// Set chart options
 		var options = {
