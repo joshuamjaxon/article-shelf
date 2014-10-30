@@ -1,9 +1,12 @@
+/**
+ * Data type for storing Wikipedia Data
+ */
 function WikiData()
 {
-	this.title;
-	this.id;
-	this.length;
-	this.values;
+	this.title;		// Title
+	this.id;		// Page ID
+	this.length;	// Number of revisions found
+	this.values;	// Actual revision data as array
 }
 
 
@@ -14,13 +17,24 @@ function WikiData()
  */
 WikipediaAPI = new function()
 {
+	// Private variable containing data retrieved from Wikipedia
 	var data = new WikiData;
 
+	/**
+	 * Accessor method for data variable
+	 */
 	this.getData = function()
 	{
 		return data;
 	}
 	
+	/**
+	 * Sets data to another WikiData object.
+	 *
+	 * ONLY USED FOR DEBUGGING.
+	 * 
+	 * @param	value	WikiData object to be copied to data
+	 */
 	this.setData = function(value)
 	{
 		data.title = value.title;
@@ -29,6 +43,24 @@ WikipediaAPI = new function()
 		data.values = value.values;
 	}
 	
+	/**
+	 * Removes all nodes belonging to the class 'json.'
+	 *
+	 * These nodes are those from which JSONP data has been obtained from Wikipedia.
+	 */
+	this.deleteJSONP = function()
+	{
+		// Set inner HTML of JSON dump to blank, erasing its contents.
+		document.getElementById('json-dump').innerHTML = "";
+	}
+	
+	/**
+	 * Adds a script tag with a query to the Wikipedia API, which returns JSONP.
+	 * 
+	 * Gets page ID and revision history for target article, including user, size, and timestamp
+	 *
+	 * @param	title	Title of article to get revision history for
+	 */
 	this.getRevisions = function(title)
 	{
 		// Set status to "Retrieving data from Wikipedia . . ."
@@ -36,15 +68,22 @@ WikipediaAPI = new function()
 		
 		// Create new script element for JSONP 
 		var script = document.createElement('script');
-		script.className = 'json';
+		script.className = 'jsonp';
 		
 		// Source url get pageids and revision history for title
 		script.src = 'http://en.wikipedia.org/w/api.php?action=query&prop=revisions&indexpageids&titles=' + title + '&rvprop=user|timestamp|size&rvlimit=max&format=json&callback=WikipediaAPI.extract';
 		
 		// Appends script to document and retrieves data from wikipedia
-		document.head.appendChild(script);
+		document.getElementById('json-dump').appendChild(script);
 	}
 	
+	/**
+	 * This function is used as a callback to extract data from JSONP.
+	 * It also updates the display status and calls the function which draws the charts.
+	 * Finally, it deletes the script tag added to the JSON dump because it is no longer necessary.
+	 *
+	 * @param	jsonp	Object returned from query
+	 */
 	this.extract = function(jsonp)
 	{
 		// Get page id to see if query was valid
@@ -57,6 +96,7 @@ WikipediaAPI = new function()
 			data.length = jsonp['query']['pages'][data.id]['revisions'].length;
 			data.values = jsonp['query']['pages'][data.id]['revisions'];
 		}
+		// Otherwise set them to blank
 		else
 		{
 			data.title = "";
@@ -67,6 +107,9 @@ WikipediaAPI = new function()
 		// After data is extracted, send it to the charts API for parsing
 		ChartsAPI.displayStatus(data);
 		ChartsAPI.drawCharts(data);
+		
+		// JSONP is no longer neessary, so remove it
+		this.deleteJSONP();
 	}
 }
 
@@ -79,14 +122,27 @@ WikipediaAPI = new function()
  */
 ChartsAPI = new function()
 {
+	/**
+	 * Changes the status of the application based on whether or not the query has been found.
+	 * A page id less than zero is indicative of a query that has not been found.
+	 *
+	 * @param	data	 WikiData Object with page id of query
+	 */
 	this.displayStatus = function(data)
 	{
-		if (data.id != -1)
+		// If page ID is valid, or greater than one, then display the number of revisions returned.
+		if (data.id >= 0)
 			document.getElementById('status').innerText = "Displaying data for the last " + data.length + " edits to article \"" + data.title + ".\"";
+		// Otherwise set status to not found.
 		else
 			document.getElementById('status').innerText = "Article not found. Is the title spelled correctly?";
 	}
 
+	/**
+	 * Turns on tab interface and draws charts based on the data passed to it.
+	 * 
+	 * @param	data	 WikiData Object with data to display
+	 */
 	this.drawCharts = function(data)
 	{
 		// Make sure chart section and tabs are displayed
@@ -131,17 +187,23 @@ ChartsAPI = new function()
 			legend: { position: 'none' },
 		};
 		
-		// Draw the chart
+		// Chart must be turned on to draw properly.
 		document.getElementById('histogram').style.display = "block";
+		
+		// Draw the chart
 		var chart = new google.visualization.Histogram(document.getElementById('histogram'));
 		chart.draw(table, options);
+		
+		// Hide the chart
 		document.getElementById('histogram').style.display = "none";
 	}
 	
 	/**
 	* Draws a calendar chart displaying the density of edits each day.
 	*
-	* Must be called before pie chart!
+	* Precondition: Must be called before pie chart!
+	*
+	* @param	data	 WikiData Object with data to display
 	*/
 	var drawCalendarChart = function(data)
 	{
@@ -191,17 +253,23 @@ ChartsAPI = new function()
 			calendar: { cellSize: 12 },
 		};
 
-		// Draw the chart
+		// Chart must be displayed to draw properly
 		document.getElementById('calendar').style.display = "block";
+		
+		// Draw the chart
 		var chart = new google.visualization.Calendar(document.getElementById('calendar'));
 		chart.draw(table, options);
+		
+		// Hide the chart
 		document.getElementById('calendar').style.display = "none";
 	}
 	
 	/**
+	* Draws a pie chart displaying the percentage of edits performed by each user
 	*
+	* Note: Should be called after drawCalendarChart due to data sorting.
 	*
-	*
+	* @param	data	 WikiData Object with data to display
 	*/
 	var drawUserPieChart = function(data)
 	{
@@ -253,10 +321,14 @@ ChartsAPI = new function()
 			legend: { position: 'none' },
 		};
 		
-		// Draw the chart
+		// Chart must be displayed to draw properly
 		document.getElementById('pie').style.display = "block";
+		
+		// Draw the chart
 		var chart = new google.visualization.PieChart(document.getElementById('pie'));
 		chart.draw(table, options);
+		
+		// Hide the chart
 		document.getElementById('pie').style.display = "none";
 	}
 
@@ -264,10 +336,15 @@ ChartsAPI = new function()
 
 
 /**
- * Controls user interaction with application
+ * Object containing functions that control user interaction with application
  */
 Controller = new function()
 {
+	/**
+	 * Handles the switching of tabs and displayed graphs.
+	 *
+	 * Typically passed "this" via an onclick event.
+	 */
 	this.switchTab = function(item)
 	{
 		// Deactivate previous tab and corresponding chart
