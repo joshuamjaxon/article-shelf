@@ -40,6 +40,7 @@ header h1 {
 
 #tabs ul {
 	width: 80%;
+	min-width: 724px;
 	margin-bottom: 0px;
 	margin-left: auto;
 	margin-right: auto;
@@ -75,7 +76,7 @@ header h1 {
 
 section {
 	width: 80%;
-	min-width: 400px;
+	min-width: 747px; /*400*/
 	border: 1px solid;
 	border-color: black;
 	margin-top: -1px;
